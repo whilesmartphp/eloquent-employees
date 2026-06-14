@@ -98,6 +98,18 @@ class EmployeeApiTest extends TestCase
     }
 
     #[Test]
+    public function index_searches_by_name_email_and_title(): void
+    {
+        $ws = HostWorkspace::create(['name' => 'Acme']);
+        $ws->employees()->create(['first_name' => 'Ada', 'last_name' => 'Lovelace', 'title' => 'Engineer']);
+        $ws->employees()->create(['first_name' => 'Grace', 'last_name' => 'Hopper', 'title' => 'Admiral']);
+
+        $this->getJson('/api/employees?q=lovelace')->assertStatus(200)->assertJsonPath('data.meta.total', 1);
+        $this->getJson('/api/employees?q=admiral')->assertStatus(200)->assertJsonPath('data.meta.total', 1);
+        $this->getJson('/api/employees?q=zzz')->assertStatus(200)->assertJsonPath('data.meta.total', 0);
+    }
+
+    #[Test]
     public function link_user_attaches_a_login_and_fires_event(): void
     {
         Event::fake([EmployeeLinkedToUser::class]);

@@ -49,13 +49,14 @@ class EmployeeController extends Controller
         if ($request->filled('q')) {
             $term = strtolower($request->input('q'));
             $query->where(function ($q) use ($term) {
-                $q->whereRaw('lower(name) like ?', ["%{$term}%"])
+                $q->whereRaw('lower(first_name) like ?', ["%{$term}%"])
+                    ->orWhereRaw('lower(last_name) like ?', ["%{$term}%"])
                     ->orWhereRaw('lower(email) like ?', ["%{$term}%"])
                     ->orWhereRaw('lower(title) like ?', ["%{$term}%"]);
             });
         }
 
-        $employees = $query->orderBy('name')
+        $employees = $query->orderBy('first_name')->orderBy('last_name')
             ->paginate((int) $request->input('per_page', 25));
 
         return response()->json([
