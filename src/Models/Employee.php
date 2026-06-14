@@ -39,6 +39,11 @@ class Employee extends Model
         return config('employees.table', 'employees');
     }
 
+    public function getNameAttribute(): string
+    {
+        return trim(($this->first_name ?? '').' '.($this->last_name ?? ''));
+    }
+
     public function owner(): MorphTo
     {
         return $this->morphTo();

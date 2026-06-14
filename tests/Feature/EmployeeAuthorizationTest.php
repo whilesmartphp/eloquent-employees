@@ -37,7 +37,7 @@ class EmployeeAuthorizationTest extends TestCase
         $this->postJson('/api/employees', [
             'owner_type' => HostWorkspace::class,
             'owner_id' => $ws->id,
-            'name' => 'Denied Person',
+            'first_name' => 'Denied',
         ])->assertForbidden();
     }
 
@@ -45,7 +45,7 @@ class EmployeeAuthorizationTest extends TestCase
     public function show_returns_403_when_authorizer_denies(): void
     {
         $ws = HostWorkspace::create(['name' => 'Acme']);
-        $employee = $ws->employees()->create(['name' => 'Hidden']);
+        $employee = $ws->employees()->create(['first_name' => 'Hidden']);
 
         $this->getJson("/api/employees/{$employee->id}")->assertForbidden();
     }
@@ -54,10 +54,10 @@ class EmployeeAuthorizationTest extends TestCase
     public function update_returns_403_when_authorizer_denies(): void
     {
         $ws = HostWorkspace::create(['name' => 'Acme']);
-        $employee = $ws->employees()->create(['name' => 'Original']);
+        $employee = $ws->employees()->create(['first_name' => 'Original']);
 
         $this->putJson("/api/employees/{$employee->id}", [
-            'name' => 'Renamed',
+            'first_name' => 'Renamed',
         ])->assertForbidden();
 
         $this->assertSame('Original', $employee->fresh()->name);
@@ -67,7 +67,7 @@ class EmployeeAuthorizationTest extends TestCase
     public function destroy_returns_403_when_authorizer_denies(): void
     {
         $ws = HostWorkspace::create(['name' => 'Acme']);
-        $employee = $ws->employees()->create(['name' => 'Keep Me']);
+        $employee = $ws->employees()->create(['first_name' => 'Keep Me']);
 
         $this->deleteJson("/api/employees/{$employee->id}")->assertForbidden();
 
@@ -78,7 +78,7 @@ class EmployeeAuthorizationTest extends TestCase
     public function link_user_returns_403_when_authorizer_denies(): void
     {
         $ws = HostWorkspace::create(['name' => 'Acme']);
-        $employee = $ws->employees()->create(['name' => 'No Login']);
+        $employee = $ws->employees()->create(['first_name' => 'No Login']);
 
         $this->postJson("/api/employees/{$employee->id}/link-user", [
             'user_id' => 5,
@@ -91,7 +91,7 @@ class EmployeeAuthorizationTest extends TestCase
     public function index_applies_scope_from_authorizer(): void
     {
         $ws = HostWorkspace::create(['name' => 'Acme']);
-        $ws->employees()->create(['name' => 'Scoped Out']);
+        $ws->employees()->create(['first_name' => 'Scoped Out']);
 
         $response = $this->getJson('/api/employees')->assertOk();
 

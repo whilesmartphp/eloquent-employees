@@ -18,7 +18,8 @@ class UpdateEmployeeRequest extends FormRequest
     {
         return [
             'reporting_to_id' => ['nullable', 'integer'],
-            'name' => ['sometimes', 'string', 'max:200'],
+            'first_name' => ['sometimes', 'string', 'max:120'],
+            'last_name' => ['nullable', 'string', 'max:120'],
             'email' => ['nullable', 'email', 'max:200'],
             'phone' => ['nullable', 'string', 'max:50'],
             'title' => ['nullable', 'string', 'max:120'],

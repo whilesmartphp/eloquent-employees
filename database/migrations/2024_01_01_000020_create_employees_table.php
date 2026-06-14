@@ -13,7 +13,8 @@ return new class extends Migration
             $table->morphs('owner');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('reporting_to_id')->nullable();
-            $table->string('name');
+            $table->string('first_name');
+            $table->string('last_name')->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
             $table->string('title')->nullable();

@@ -31,9 +31,10 @@ An employee is a party record scoped to its owner, distinct from the auth user:
 - **`user_id`** -- optional link to an authenticated user. Null for people without a login.
 - **`reporting_to_id`** -- optional self-reference to the employee's manager.
 
-Other fields: `name`, `email`, `phone`, `title`, `department`, `status`
+Other fields: `first_name`, `last_name`, `email`, `phone`, `title`, `department`, `status`
 (`active | inactive | on_leave | terminated`), `employment_type` (`full_time | part_time | contractor`),
-`start_date`, `end_date`, `metadata`.
+`start_date`, `end_date`, `metadata`. A read-only `name` accessor returns the full name. Host-specific
+extras (such as an avatar) live in the `metadata` bag, not on the core table.
 
 `email` is unique per owner, not globally. Employees use the `HasRoles` trait from
 `whilesmart/eloquent-roles`, so role bundles (accountant, manager, ...) can be assigned in a workspace

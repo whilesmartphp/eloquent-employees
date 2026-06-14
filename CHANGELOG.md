@@ -5,6 +5,7 @@ All notable changes to `whilesmart/eloquent-employees` are documented here.
 ## [1.0.0] - 2026-06-14
 
 - Initial release
+- `Employee` model with `first_name` / `last_name` (plus a read-only full-name `name` accessor)
 - `Employee` model with polymorphic `owner` (the employing workspace or organisation)
 - Optional `user_id` link so an employee may exist without a login (payroll-only staff, contractors) and be connected to an authenticated user later
 - `HasEmployees` trait for owner-side models (workspaces, organisations)

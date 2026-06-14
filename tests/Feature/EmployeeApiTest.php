@@ -19,13 +19,15 @@ class EmployeeApiTest extends TestCase
         $response = $this->postJson('/api/employees', [
             'owner_type' => HostWorkspace::class,
             'owner_id' => $ws->id,
-            'name' => 'Ada Lovelace',
+            'first_name' => 'Ada',
+            'last_name' => 'Lovelace',
             'email' => 'ada@acme.test',
             'title' => 'Engineer',
             'employment_type' => 'full_time',
         ]);
 
         $response->assertStatus(201);
+        $response->assertJsonPath('data.first_name', 'Ada');
         $response->assertJsonPath('data.name', 'Ada Lovelace');
         $response->assertJsonPath('data.status', 'active');
         $response->assertJsonPath('data.user_id', null);
@@ -33,7 +35,7 @@ class EmployeeApiTest extends TestCase
     }
 
     #[Test]
-    public function post_rejects_without_name(): void
+    public function post_rejects_without_first_name(): void
     {
         $ws = HostWorkspace::create(['name' => 'Acme']);
 
@@ -44,7 +46,7 @@ class EmployeeApiTest extends TestCase
         ]);
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['name']);
+        $response->assertJsonValidationErrors(['first_name']);
     }
 
     #[Test]
@@ -55,7 +57,8 @@ class EmployeeApiTest extends TestCase
         $response = $this->postJson('/api/employees', [
             'owner_type' => HostWorkspace::class,
             'owner_id' => $ws->id,
-            'name' => 'Grace Hopper',
+            'first_name' => 'Grace',
+            'last_name' => 'Hopper',
             'start_date' => '2024-01-10',
             'end_date' => '2024-01-01',
         ]);
@@ -70,9 +73,9 @@ class EmployeeApiTest extends TestCase
         $wsA = HostWorkspace::create(['name' => 'Acme A']);
         $wsB = HostWorkspace::create(['name' => 'Acme B']);
 
-        $wsA->employees()->create(['name' => 'A1']);
-        $wsA->employees()->create(['name' => 'A2']);
-        $wsB->employees()->create(['name' => 'B1']);
+        $wsA->employees()->create(['first_name' => 'A1']);
+        $wsA->employees()->create(['first_name' => 'A2']);
+        $wsB->employees()->create(['first_name' => 'B1']);
 
         $response = $this->getJson('/api/employees?owner_type='.urlencode(HostWorkspace::class).'&owner_id='.$wsA->id);
 
@@ -84,9 +87,9 @@ class EmployeeApiTest extends TestCase
     public function index_filters_by_status(): void
     {
         $ws = HostWorkspace::create(['name' => 'Acme']);
-        $ws->employees()->create(['name' => 'Active One', 'status' => 'active']);
-        $ws->employees()->create(['name' => 'Gone One', 'status' => 'terminated']);
-        $ws->employees()->create(['name' => 'Gone Two', 'status' => 'terminated']);
+        $ws->employees()->create(['first_name' => 'Active', 'status' => 'active']);
+        $ws->employees()->create(['first_name' => 'Gone', 'status' => 'terminated']);
+        $ws->employees()->create(['first_name' => 'Gone2', 'status' => 'terminated']);
 
         $response = $this->getJson('/api/employees?status=terminated');
 
@@ -100,7 +103,7 @@ class EmployeeApiTest extends TestCase
         Event::fake([EmployeeLinkedToUser::class]);
 
         $ws = HostWorkspace::create(['name' => 'Acme']);
-        $employee = $ws->employees()->create(['name' => 'Payroll Only']);
+        $employee = $ws->employees()->create(['first_name' => 'Payroll', 'last_name' => 'Only']);
         $this->assertNull($employee->user_id);
 
         $response = $this->postJson("/api/employees/{$employee->id}/link-user", [
@@ -117,7 +120,7 @@ class EmployeeApiTest extends TestCase
     public function delete_soft_deletes_the_employee(): void
     {
         $ws = HostWorkspace::create(['name' => 'Acme']);
-        $employee = $ws->employees()->create(['name' => 'Temp']);
+        $employee = $ws->employees()->create(['first_name' => 'Temp']);
 
         $response = $this->deleteJson("/api/employees/{$employee->id}");
 
