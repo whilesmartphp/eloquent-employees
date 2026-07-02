@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/whilesmart/docs-kit/main/schema/docs.schema.json",
+  "name": "Eloquent Employees",
+  "description": "Polymorphic employee records for Laravel applications, with optional links to authenticated users",
+  "icon": "users",
+  "category": {
+    "language": "php",
+    "framework": "laravel"
+  },
+  "sidebar": [
+    { "title": "Installation", "path": "docs/installation.md" },
+    { "title": "Quick Start", "path": "docs/quick-start.md" },
+    { "title": "Data Model", "path": "docs/data-model.md" },
+    { "title": "API Endpoints", "path": "docs/api-endpoints.md" },
+    { "title": "HasEmployees Trait", "path": "docs/has-employees-trait.md" },
+    { "title": "Events", "path": "docs/events.md" },
+    { "title": "Authorization", "path": "docs/authorization.md" },
+    { "title": "Configuration", "path": "docs/configuration.md" }
+  ]
+}
